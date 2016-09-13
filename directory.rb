@@ -21,7 +21,13 @@ student_count=students.count
 # This string covers 2 lines.
 students_intro = "The students of Villains Academy\n-----------------"
 
-# THis set of puts gives us a nice set of info on the students
+# This set of puts and the iterator gives us a nice set of info on the students
 puts students_intro
-puts students[0..-1]
+# This iterator takes each element in the students array, assigns it to the
+# placeholder z, then it executes the code block between do and end, which
+# in this case puts it to the screen. 
+students.each do |z|
+   puts z 
+end
+
 puts "\nOverall we have #{student_count} great students."
