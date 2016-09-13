@@ -15,19 +15,25 @@ students=[ "Dr. Hannibal Lecter",
            "Norman Bates"
          ]
 
-# This prevents us from having to manually update the student count
-student_count=students.count
-
 # This string covers 2 lines.
-students_intro = "The students of Villains Academy\n-----------------"
-
-# This set of puts and the iterator gives us a nice set of info on the students
-puts students_intro
-# This iterator takes each element in the students array, assigns it to the
-# placeholder z, then it executes the code block between do and end, which
-# in this case puts it to the screen. 
-students.each do |z|
-   puts z 
+def put_header
+    puts "The students of Villains Academy\n-----------------"
 end
 
-puts "\nOverall we have #{student_count} great students."
+# This method has a parameter placeholder x that is then passed to the iterator
+# that takes each element in whatever array is passed to it, assigns it to the
+# placeholder y, then it executes the code block between do and end, which
+# in this case puts it to the screen. 
+def put_names x
+    x.each do |y|
+       puts y 
+    end
+end
+
+def put_footer x
+    puts "Overall we have #{x.count} great students."
+end
+
+put_header
+put_names students
+put_footer students
