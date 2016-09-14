@@ -35,7 +35,7 @@ def puts_students(student_list)
     puts "Print students beginning with the letter:"
     letter=gets.chomp
     student_list.each_with_index do |name,name_index|
-        if name[:name][0].downcase==letter.downcase
+        if name[:name][0].downcase==letter.downcase && name[:name].length<12
             puts "#{name_index+1}. #{name[:name]}, (#{name[:cohort]} cohort.)"
         end
     end
