@@ -32,8 +32,12 @@ end
 # is then accessed and has it's position + 1, name, and cohort key and value added
 # into the string, which is then putsed.
 def puts_students(student_list)
+    puts "Print students beginning with the letter:"
+    letter=gets.chomp
     student_list.each_with_index do |name,name_index|
-      puts "#{name_index+1}. #{name[:name]}, (#{name[:cohort]} cohort)"
+        if name[:name][0].downcase==letter.downcase
+            puts "#{name_index+1}. #{name[:name]}, (#{name[:cohort]} cohort.)"
+        end
     end
 end
 
