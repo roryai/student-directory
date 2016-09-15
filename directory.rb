@@ -4,6 +4,7 @@ def input_students
    puts "Please enter the names of all the Villains who will be enrolling this semester"
    puts "When you've entered each name, press Enter. To finish, enter a blank line"
    students=[]
+   # Alternatives to .chomp are .tr(\n), .chop, .chop(\n), .strip
    name=gets.chomp
    
     while !name.empty? do
