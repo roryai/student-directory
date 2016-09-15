@@ -4,11 +4,21 @@ def input_students
    puts "Please enter the names of all the Villains who will be enrolling this semester"
    puts "When you've entered each name, press Enter. To finish, enter a blank line"
    students=[]
+   
    name=gets.chomp
     while !name.empty? do
       puts "What is the student's favourite hobby?"
       hobby=gets.chomp
-      students << {name: name, hobby: hobby, cohort: :november}
+          if hobby==""
+                hobby="<empty>"
+          end
+      puts "Which cohort is the student enrolling in?"
+      cohort=gets.chomp
+      cohort=cohort.to_sym
+          if cohort==""
+            cohort="<empty>"
+          end
+      students << {name: name, hobby: hobby, cohort: cohort}
         if students.length==1
             puts "We now have 1 student enrolled."
         else
@@ -26,7 +36,7 @@ def puts_students(student_list)
     letter=gets.chomp
     student_list.each_with_index do |name,name_index|
         if name[:name][0].downcase==letter.downcase
-            puts "#{name_index+1}. #{name[:name].ljust(30)}, (#{name[:cohort]} cohort.) Hobby: #{name[:hobby]}."
+            puts "#{name_index+1}. #{name[:name].ljust(30)}, (#{name[:cohort].to_s.ljust(15)} cohort.)     Hobby: #{name[:hobby]}."
         end
     end
 end
