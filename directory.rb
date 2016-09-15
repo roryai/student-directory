@@ -46,11 +46,13 @@ end
 
 # This method prints the student name and cohort is a numbered list.
 def puts_students(student_list)
-    puts "Print students beginning with the letter:"
-    letter=gets.chomp
-    student_list.each_with_index do |name,name_index|
-        if name[:name][0].downcase==letter.downcase
-            puts "#{name_index+1}. #{name[:name].ljust(30)}, (#{name[:cohort].to_s.ljust(15)} cohort.)     Hobby: #{name[:hobby]}."
+    if student_list.length > 0
+        puts "Print students beginning with the letter:"
+        letter=gets.chomp
+        student_list.each_with_index do |name,name_index|
+            if name[:name][0].downcase==letter.downcase
+                puts "#{name_index+1}. #{name[:name].ljust(30)}, (#{name[:cohort].to_s.ljust(15)} cohort.)     Hobby: #{name[:hobby]}."
+            end
         end
     end
 end
