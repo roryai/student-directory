@@ -4,21 +4,34 @@ def input_students
    puts "Please enter the names of all the Villains who will be enrolling this semester"
    puts "When you've entered each name, press Enter. To finish, enter a blank line"
    students=[]
-   
    name=gets.chomp
+   
     while !name.empty? do
+    # This section takes the hobby and cohort info
       puts "What is the student's favourite hobby?"
       hobby=gets.chomp
-          if hobby==""
-                hobby="<empty>"
-          end
+        if hobby==""
+          hobby="<empty>"
+        end
       puts "Which cohort is the student enrolling in?"
       cohort=gets.chomp
       cohort=cohort.to_sym
-          if cohort==""
-            cohort="<empty>"
-          end
+        if cohort==""
+          cohort="<empty>"
+        end
+    # Name, hobby and cohort put into a new hash.      
       students << {name: name, hobby: hobby, cohort: cohort}
+      
+    # Checks to see if typo was made on last entry. Deletes it if so and returns user to start of program.  
+      puts "Is this information correct?"
+      puts students.last
+      puts "If not, enter any character followed by enter and then retype the information. If the information is correct, just press enter"
+      typo=gets.chomp
+     
+        if typo!=""
+            students.pop
+        end
+      
         if students.length==1
             puts "We now have 1 student enrolled."
         else
