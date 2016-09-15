@@ -3,11 +3,8 @@ def input_students
    puts "Hello, and welcome to Villains Academy"
    puts "Please enter the names of all the Villains who will be enrolling this semester"
    puts "When you've entered each name, press Enter. To finish, enter a blank line"
-   
    students=[]
-   
    name=gets.chomp
-   
     while !name.empty? do
       puts "What is the student's favourite hobby?"
       hobby=gets.chomp
@@ -17,9 +14,9 @@ def input_students
         else
             puts "We now have #{students.length} students enrolled."
         end
+      puts "Enter the name of the next student to be enrolled:"
       name=gets.chomp
     end
-   
    students
 end
 
@@ -28,8 +25,8 @@ def puts_students(student_list)
     puts "Print students beginning with the letter:"
     letter=gets.chomp
     student_list.each_with_index do |name,name_index|
-        if name[:name][0].downcase==letter.downcase && name[:name].length<12
-            puts "#{name_index+1}. #{name[:name]}, (#{name[:cohort]} cohort.) Hobby: #{name[:hobby]}."
+        if name[:name][0].downcase==letter.downcase
+            puts "#{name_index+1}. #{name[:name].ljust(30)}, (#{name[:cohort]} cohort.) Hobby: #{name[:hobby]}."
         end
     end
 end
