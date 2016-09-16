@@ -1,86 +1,91 @@
+@students = []
+
 def interactive_menu
-    students=[]
     loop do
-        puts "\nWhat would you like to do?\n "
-        puts "1. Input students."
-        puts "\n2. Print list of students."
-        puts "\n3. "
-        puts "\n9. Exit program."
-        user_input=gets.chomp
-        
-        case user_input
-            when "1"
-                students=input_students
-            when "2"
-                put_header
-                puts_students students
-                put_footer students
-            when "3"
-                
-            when "9"
-                abort("\nUser exited the program\n ")
-            else 
-                puts "\nInvalid input, try again."
-        end
+        print_menu
+        process(gets.chomp)
     end
-    # take user input and store it in a variable
-    # put that variable into a case switch
-    # call the methods we've already created
 end
 
+def print_menu
+    puts "\nWhat would you like to do?"
+    puts "\n1. Input students."
+    puts "\n2. Print list of students."
+    puts "\n3. "
+    puts "\n9. Exit program."
+end
+
+def process selection
+    case selection
+        when "1"
+            input_students
+        when "2"
+            show_students
+        when "3"
+            
+        when "9"
+            abort("\nUser exited the program\n ")
+        else 
+            puts "\nInvalid input, try again."
+    end
+end
+
+def show_students
+        put_header
+        puts_students @students
+        put_footer
+end
 
 #This method asks the user for input and adds it to the student array.
 def input_students
-   puts "Hello, and welcome to Villains Academy"
-   puts "Please enter the names of all the Villains who will be enrolling this semester"
-   puts "When you've entered each name, press Enter. To finish, enter a blank line"
-   students=[]
+   puts "\nHello, and welcome to Villains Academy"
+   puts "\nPlease enter the names of all the Villains who will be enrolling this semester"
+   puts "\nWhen you've entered each name, press Enter. To finish, enter a blank line"
    # Alternatives to .chomp are .tr(\n), .chop, .chop(\n), .strip
    name=gets.chomp
    
     while !name.empty? do
     # This section takes the hobby and cohort info
-      puts "What is the student's favourite hobby?"
+      puts "\nWhat is the student's favourite hobby?"
       hobby=gets.chomp
         if hobby==""
           hobby="<empty>"
         end
-      puts "Which cohort is the student enrolling in?"
+      puts "\nWhich cohort is the student enrolling in?"
       cohort=gets.chomp
       cohort=cohort.to_sym
         if cohort==""
           cohort="<empty>"
         end
     # Name, hobby and cohort put into a new hash.      
-      students << {name: name, hobby: hobby, cohort: cohort}
+      @students << {name: name, hobby: hobby, cohort: cohort}
       
     # Checks to see if typo was made on last entry. Deletes it if so and returns user to start of program.  
-      puts "Is this information correct?"
-      puts students.last
-      puts "If not, enter any character followed by enter and then retype the information. If the information is correct, just press enter"
+      puts "\nIs this information correct?"
+      puts @students.last
+      puts "\nIf not, enter any character followed by enter and then retype the information. If the information is correct, just press enter"
       typo=gets.chomp
      
         if typo!=""
-            students.pop
+            @students.pop
         end
-      
-        if students.length==1
-            puts "We now have 1 student enrolled."
+     
+        if @students.length==1
+            puts "\nWe now have 1 student enrolled."
         else
-            puts "We now have #{students.length} students enrolled."
+            puts "\nWe now have #{@students.length} students enrolled."
         end
-      puts "Enter the name of the next student to be enrolled:"
+      puts "\nEnter the name of the next student to be enrolled:"
       name=gets.chomp
     end
-   students
 end
 
 # This method prints the student name and cohort is a numbered list.
-def puts_students(student_list)
-    if student_list.length > 0
-        puts "Print students beginning with the letter:"
+def puts_students students
+    if students.length > 0
+        puts "\nPrint students beginning with the letter:"
         letter=gets.chomp
-        student_list.each_with_index do |name,name_index|
+        students.each_with_index do |name,name_index|
             if name[:name][0].downcase==letter.downcase
                 puts "#{name_index+1}. #{name[:name].ljust(30)}, (#{name[:cohort].to_s.ljust(15)} cohort.)     Hobby: #{name[:hobby]}."
             end
@@ -89,11 +94,11 @@ def puts_students(student_list)
 end
 
 def put_header
-    puts "The students of Villains Academy\n-----------------"
+    puts "\nThe students of Villains Academy\n-----------------"
 end
 
-def put_footer student
-    puts "Overall we have #{student.count} great students."
+def put_footer
+    puts "\nOverall we have #{@students.count} great students."
 end
 
 # This begins the program
