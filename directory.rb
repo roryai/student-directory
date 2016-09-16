@@ -7,14 +7,17 @@ def interactive_menu
     end
 end
 
+###############################################################################
 def print_menu
     puts "\nWhat would you like to do?"
     puts "\n1. Input students."
     puts "\n2. Print list of students."
-    puts "\n3. "
+    puts "\n3. Save student data to 'students.csv'"
+    puts "\n4. Load student data from 'students.csv'"
     puts "\n9. Exit program."
 end
 
+###############################################################################
 def process selection
     case selection
         when "1"
@@ -22,7 +25,9 @@ def process selection
         when "2"
             show_students
         when "3"
-            
+            save_students
+        when "4"
+            load_students
         when "9"
             abort("\nUser exited the program\n ")
         else 
@@ -30,12 +35,7 @@ def process selection
     end
 end
 
-def show_students
-        put_header
-        puts_students @students
-        put_footer
-end
-
+###############################################################################
 #This method asks the user for input and adds it to the student array.
 def input_students
    puts "\nHello, and welcome to Villains Academy"
@@ -80,6 +80,19 @@ def input_students
     end
 end
 
+###############################################################################
+def show_students
+        put_header
+        puts_students @students
+        put_footer
+end
+
+###############################################################################
+def put_header
+    puts "\nThe students of Villains Academy\n-----------------"
+end
+
+###############################################################################
 # This method prints the student name and cohort is a numbered list.
 def puts_students students
     if students.length > 0
@@ -93,6 +106,32 @@ def puts_students students
     end
 end
 
+def put_footer
+    puts "\nOverall we have #{@students.count} great students."
+end
+
+###############################################################################
+def save_students
+    file = File.open("students.csv", "w")
+    @students.each do |student|
+        student_data=[student[:name],student[:hobby], student[:cohort]]
+        csv_line = student_data.join(",")
+        file.puts csv_line
+    end
+    file.close
+end
+
+###############################################################################
+def load_students
+   file = File.open("students.csv", "r")
+   file.readlines.each do |line|
+       name, hobby, cohort = line.chomp.split(',')
+       @students << {name: name, hobby: hobby, cohort: cohort.to_sym}
+   end
+   file.close
+end
+
+###############################################################################
 def print_selected_cohort students
     selection=gets.chomp
  students.map do |hash| if hash[:cohort] == selection.to_sym
@@ -101,13 +140,6 @@ def print_selected_cohort students
     end
 end
 
-def put_header
-    puts "\nThe students of Villains Academy\n-----------------"
-end
-
-def put_footer
-    puts "\nOverall we have #{@students.count} great students."
-end
 
 # This begins the program
 interactive_menu
