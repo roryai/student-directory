@@ -1,3 +1,34 @@
+def interactive_menu
+    students=[]
+    loop do
+        puts "\nWhat would you like to do?\n "
+        puts "1. Input students."
+        puts "\n2. Print list of students."
+        puts "\n3. "
+        puts "\n9. Exit program."
+        user_input=gets.chomp
+        
+        case user_input
+            when "1"
+                students=input_students
+            when "2"
+                put_header
+                puts_students students
+                put_footer students
+            when "3"
+                
+            when "9"
+                abort("\nUser exited the program\n ")
+            else 
+                puts "\nInvalid input, try again."
+        end
+    end
+    # take user input and store it in a variable
+    # put that variable into a case switch
+    # call the methods we've already created
+end
+
+
 #This method asks the user for input and adds it to the student array.
 def input_students
    puts "Hello, and welcome to Villains Academy"
@@ -65,13 +96,10 @@ def put_footer student
     puts "Overall we have #{student.count} great students."
 end
 
+# This begins the program
+interactive_menu
 
-# This is the input method
-students=input_students
-# Output methods called below
-put_header
-puts_students students
-put_footer students
+
 
 
 
