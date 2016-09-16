@@ -93,6 +93,14 @@ def puts_students students
     end
 end
 
+def print_selected_cohort students
+    selection=gets.chomp
+ students.map do |hash| if hash[:cohort] == selection.to_sym
+        puts "Name: #{hash[:name].to_s.ljust(32)} Cohort: #{hash[:cohort]}"
+        end
+    end
+end
+
 def put_header
     puts "\nThe students of Villains Academy\n-----------------"
 end
