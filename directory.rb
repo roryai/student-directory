@@ -1,15 +1,17 @@
 @students = []
 
 def try_load_students
-   filename=ARGV.first
-   return if filename.nil?
-   if File.exists?(filename)
-       load_students(filename)
-       puts "Loaded #{@students.count} entries from #{filename}."
-   else
-       puts "Sorry, #{filename} doesn't exist."
-       exit
-   end
+    filename=ARGV.first
+  if filename.nil?
+    filename="students.csv"
+  end
+  if File.exists?(filename)
+      load_students(filename)
+      puts "Loaded #{@students.count} entries from #{filename}."
+  else
+      puts "Sorry, #{filename} doesn't exist."
+      exit
+  end
 end
 
 ###############################################################################
@@ -26,7 +28,8 @@ def print_menu
     puts "\n1. Input students."
     puts "\n2. Print list of students."
     puts "\n3. Save student data to 'students.csv'"
-    puts "\n4. Load student data from 'students.csv'"
+    puts "\n4. Load student data from a file."
+    puts "\n5. Print students from a single cohort."
     puts "\n9. Exit program."
 end
 
@@ -40,7 +43,10 @@ def process selection
         when "3"
             save_students
         when "4"
-            load_students
+            puts "Load data from which file?"
+            load_students STDIN.gets.chomp
+        when "5"
+            print_selected_cohort @students 
         when "9"
             abort("\nUser exited the program\n ")
         else 
@@ -74,13 +80,23 @@ def input_students
       @students << {name: name, hobby: hobby, cohort: cohort}
       
     # Checks to see if typo was made on last entry. Deletes it if so and returns user to start of program.  
-      puts "\nIs this information correct?"
+    info_checker
+      name=STDIN.gets.chomp
+    end
+end
+
+###############################################################################
+def info_checker
+  puts "\nIs this information correct?"
       puts @students.last
       puts "\nIf not, enter any character followed by enter and then retype the information. If the information is correct, just press enter"
       typo=STDIN.gets.chomp
      
         if typo!=""
             @students.pop
+            puts "\nStudent information not added to directory."
+        else
+            puts "\nStudent information successfully added to directory."
         end
      
         if @students.length==1
@@ -89,8 +105,6 @@ def input_students
             puts "\nWe now have #{@students.length} students enrolled."
         end
       puts "\nEnter the name of the next student to be enrolled:"
-      name=STDIN.gets.chomp
-    end
 end
 
 ###############################################################################
@@ -109,12 +123,12 @@ end
 # This method prints the student name and cohort is a numbered list.
 def puts_students students
     if students.length > 0
-        puts "\nPrint students beginning with the letter:"
-        letter=STDIN.gets.chomp
+ #       puts "\nPrint students beginning with the letter:"
+ #       letter=STDIN.gets.chomp
         students.each_with_index do |name,name_index|
-            if name[:name][0].downcase==letter.downcase
+  #          if name[:name][0].downcase==letter.downcase
                 puts "#{name_index+1}. #{name[:name].ljust(30)}, (#{name[:cohort].to_s.ljust(15)} cohort.)     Hobby: #{name[:hobby]}."
-            end
+  #          end
         end
     end
 end
@@ -132,27 +146,41 @@ def save_students
         file.puts csv_line
     end
     file.close
+    STDOUT.puts "Data successfully saved to students.csv"
 end
 
 ###############################################################################
-def load_students(filename = "students.csv")
+def load_students(filename)
+    if !File.exists?(filename)
+     puts "\nNo such file. Please try again."
+     return
+    end
    file = File.open(filename, "r")
    file.readlines.each do |line|
        name, hobby, cohort = line.chomp.split(',')
        @students << {name: name, hobby: hobby, cohort: cohort.to_sym}
    end
    file.close
+   STDOUT.puts "Student data successfully loaded from #{filename}"
 end
 
 ###############################################################################
 def print_selected_cohort students
+    puts "Which cohort would you like to print?"
     selection=STDIN.gets.chomp
- students.map do |hash| if hash[:cohort] == selection.to_sym
+    cohort_checker selection
+    if cohort_checker selection === "sdfgsdfgsdfg"
+        puts "No students in that cohort in directory"
+    end
+end
+
+###############################################################################
+def cohort_checker selection
+@students.each do |hash| if hash[:cohort].to_s == selection
         puts "Name: #{hash[:name].to_s.ljust(32)} Cohort: #{hash[:cohort]}"
         end
     end
 end
-
 
 # This begins the program
 try_load_students
