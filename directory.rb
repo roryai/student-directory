@@ -1,9 +1,22 @@
 @students = []
 
+def try_load_students
+   filename=ARGV.first
+   return if filename.nil?
+   if File.exists?(filename)
+       load_students(filename)
+       puts "Loaded #{@students.count} entries from #{filename}."
+   else
+       puts "Sorry, #{filename} doesn't exist."
+       exit
+   end
+end
+
+###############################################################################
 def interactive_menu
     loop do
         print_menu
-        process(gets.chomp)
+        process(STDIN.gets.chomp)
     end
 end
 
@@ -42,17 +55,17 @@ def input_students
    puts "\nPlease enter the names of all the Villains who will be enrolling this semester"
    puts "\nWhen you've entered each name, press Enter. To finish, enter a blank line"
    # Alternatives to .chomp are .tr(\n), .chop, .chop(\n), .strip
-   name=gets.chomp
+   name=STDIN.gets.chomp
    
     while !name.empty? do
     # This section takes the hobby and cohort info
       puts "\nWhat is the student's favourite hobby?"
-      hobby=gets.chomp
+      hobby=STDIN.gets.chomp
         if hobby==""
           hobby="<empty>"
         end
       puts "\nWhich cohort is the student enrolling in?"
-      cohort=gets.chomp
+      cohort=STDIN.gets.chomp
       cohort=cohort.to_sym
         if cohort==""
           cohort="<empty>"
@@ -64,7 +77,7 @@ def input_students
       puts "\nIs this information correct?"
       puts @students.last
       puts "\nIf not, enter any character followed by enter and then retype the information. If the information is correct, just press enter"
-      typo=gets.chomp
+      typo=STDIN.gets.chomp
      
         if typo!=""
             @students.pop
@@ -76,7 +89,7 @@ def input_students
             puts "\nWe now have #{@students.length} students enrolled."
         end
       puts "\nEnter the name of the next student to be enrolled:"
-      name=gets.chomp
+      name=STDIN.gets.chomp
     end
 end
 
@@ -97,7 +110,7 @@ end
 def puts_students students
     if students.length > 0
         puts "\nPrint students beginning with the letter:"
-        letter=gets.chomp
+        letter=STDIN.gets.chomp
         students.each_with_index do |name,name_index|
             if name[:name][0].downcase==letter.downcase
                 puts "#{name_index+1}. #{name[:name].ljust(30)}, (#{name[:cohort].to_s.ljust(15)} cohort.)     Hobby: #{name[:hobby]}."
@@ -122,8 +135,8 @@ def save_students
 end
 
 ###############################################################################
-def load_students
-   file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+   file = File.open(filename, "r")
    file.readlines.each do |line|
        name, hobby, cohort = line.chomp.split(',')
        @students << {name: name, hobby: hobby, cohort: cohort.to_sym}
@@ -133,7 +146,7 @@ end
 
 ###############################################################################
 def print_selected_cohort students
-    selection=gets.chomp
+    selection=STDIN.gets.chomp
  students.map do |hash| if hash[:cohort] == selection.to_sym
         puts "Name: #{hash[:name].to_s.ljust(32)} Cohort: #{hash[:cohort]}"
         end
@@ -142,6 +155,7 @@ end
 
 
 # This begins the program
+try_load_students
 interactive_menu
 
 
