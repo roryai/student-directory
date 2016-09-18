@@ -1,17 +1,19 @@
-#create new menu option for print selected cohort
-# add ???
+require 'csv'
 
 @students = []
 
 def try_load_students
+    # ARGV.first takes the first agrument passed to the command line, eg. "buy directory.rb students.csv"
     filename=ARGV.first
   if filename.nil?
+    # Defaults to students.csv
     filename="students.csv"
   end
   if File.exists?(filename)
       load_students(filename)
       puts "Loaded #{@students.count} entries from #{filename}."
   else
+      # Filenot found error messages. Program continues to interactive menu.
       if filename == "students.csv"
           puts "'students.csv' not found"
       else
@@ -24,7 +26,7 @@ end
 def interactive_menu
     loop do
         print_menu
-        process(STDIN.gets.chomp)
+        method_selector(STDIN.gets.chomp)
     end
 end
 
@@ -36,11 +38,13 @@ def print_menu
     puts "\n3. Save student data to file."
     puts "\n4. Load student data from a file."
     puts "\n5. Print students from a single cohort."
+    puts "\n6. Print source code of this program."
+    puts "\n7. Print students beginning with letter __."
     puts "\n9. Exit program."
 end
 
 ###############################################################################
-def process selection
+def method_selector selection
     case selection
         when "1"
             input_students
@@ -53,7 +57,11 @@ def process selection
             puts "Load data from which file?"
             load_students STDIN.gets.chomp
         when "5"
-            print_selected_cohort @students 
+            print_selected_cohort @students
+        when "6"
+            output_source_code
+        when "7"
+            print_by_student_letter
         when "9"
             abort("\nUser exited the program\n ")
         else 
@@ -72,8 +80,11 @@ def input_students
     # Alternatives to .chomp are .tr(\n), .chop, .chop(\n), .strip
     name=STDIN.gets.chomp
     while !name.empty? do
+        # Passes name to getter, getter takes other info and puts it into @students
         student_info_getter(name)
+        # Asks user if input is correct, returns info on how many students are enrolled.
         info_checker
+        # Takes name of next student once prev student added to @students
         name=STDIN.gets.chomp
     end
 end
@@ -125,15 +136,11 @@ end
 
 ###############################################################################
 def show_students
-        put_header
+        puts "\nThe students of Villains Academy\n----------------------------"
         puts_students @students
-        put_footer
+        puts "\nOverall we have #{@students.count} great students."
 end
 
-###############################################################################
-def put_header
-    puts "\nThe students of Villains Academy\n-----------------"
-end
 
 ###############################################################################
 # This method prints the student name and cohort is a numbered list.
@@ -149,20 +156,25 @@ def puts_students students
     end
 end
 
-def put_footer
-    puts "\nOverall we have #{@students.count} great students."
-end
 
+###############################################################################
+def print_by_student_letter
+    puts "\nPrint students beginning with the letter:"
+    letter=STDIN.gets.chomp
+    @students.each_with_index do |name,name_index|
+        if name[:name][0].downcase==letter.downcase
+        puts "#{name_index+1}. #{name[:name].ljust(30)}, (#{name[:cohort].to_s.ljust(15)} cohort.)     Hobby: #{name[:hobby]}." 
+        end
+    end
+end
 ###############################################################################
 def save_students(filename)
     if filename == ""
         filename = "students.csv"
     end
-    File.open(filename, "w") do |file|
+    CSV.open(filename, "w") do |csv|
         @students.each do |student|
-            student_data=[student[:name], student[:hobby], student[:cohort]]
-            csv_line = student_data.join(",")
-            file.puts csv_line
+            csv << [student[:name], student[:hobby], student[:cohort]]
         end
     end
     STDOUT.puts "Data successfully saved to #{filename}"
@@ -178,8 +190,7 @@ def load_students(filename)
    File.open filename, "r" do |file|
        file.readlines.each do |line|
            name, hobby, cohort = line.chomp.split(',')
-           cohort=cohort.to_sym
-           @students << {name: name, hobby: hobby, cohort: cohort}
+           @students << {name: name, hobby: hobby, cohort: cohort.to_sym}
        end
    end
    STDOUT.puts "#{@students.count} entries successfully loaded from #{filename}"
@@ -190,46 +201,27 @@ def print_selected_cohort students
     puts "Which cohort would you like to print?"
     selection=STDIN.gets.chomp
     cohort_checker selection
-    if cohort_checker selection === "sdfgsdfgsdfg"
-        puts "No students in that cohort in directory"
-    end
+    # if cohort_checker selection === "sdfgsdfgsdfg"
+    #     puts "No students in that cohort in directory"
+    # end
 end
 
 ###############################################################################
 def cohort_checker selection
 @students.each do |hash| if hash[:cohort].to_s == selection
-        puts "Name: #{hash[:name].to_s.ljust(32)} Cohort: #{hash[:cohort]}"
+        puts "Name: #{hash[:name].to_s.ljust(20)} Cohort: #{hash[:cohort]}"
         end
     end
 end
-
+###############################################################################
+def output_source_code
+    File.open __FILE__, "r" do |file|
+       file.readlines.each do |line|
+           puts line
+       end
+   end
+end
+###############################################################################
 # This begins the program
 try_load_students
 interactive_menu
-
-
-
-
-
-# Code below saved for possible later use
-#students= [{name: "Dr. Hannibal Lecter",            cohort: :november},
-#           {name: "Darth Vader",                    cohort: :november},
-#           {name: "Nurse Ratched",                  cohort: :november},
-#           {name: "Michael Corleone",               cohort: :november},
-#           {name: "Alex DeLarge",                   cohort: :november},
-#           {name: "The Wicked Witch of the West",   cohort: :november},
-#           {name: "Terminator",                     cohort: :november},
-#           {name: "Freddie Kruger",                 cohort: :november},
-#           {name: "The Joker",                      cohort: :november},
-#           {name: "Joffrey Baratheon",              cohort: :november},
-#           {name: "Norman Bates",                   cohort: :november}
-#           ]
-
-            # puts "#{student_list[counter][0]}. #{student_list[0][0]}, (#{student_list[0][:cohort]} cohort)"
-
-
-# This method takes the information passed to it (the student array), and passes it
-# into the each_with_Index iterator, which gives a way to access the array index info
-# within the iterator. Not possible to do this otherwise. Each entry in the array
-# is then accessed and has it's position + 1, name, and cohort key and value added
-# into the string, which is then putsed.
