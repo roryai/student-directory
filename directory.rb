@@ -1,3 +1,6 @@
+#create new menu option for print selected cohort
+# add ???
+
 @students = []
 
 def try_load_students
@@ -9,8 +12,11 @@ def try_load_students
       load_students(filename)
       puts "Loaded #{@students.count} entries from #{filename}."
   else
-      puts "Sorry, #{filename} doesn't exist."
-      exit
+      if filename == "students.csv"
+          puts "'students.csv' not found"
+      else
+          puts "Sorry, #{filename} doesn't exist."
+      end
   end
 end
 
@@ -27,7 +33,7 @@ def print_menu
     puts "\nWhat would you like to do?"
     puts "\n1. Input students."
     puts "\n2. Print list of students."
-    puts "\n3. Save student data to 'students.csv'"
+    puts "\n3. Save student data to file."
     puts "\n4. Load student data from a file."
     puts "\n5. Print students from a single cohort."
     puts "\n9. Exit program."
@@ -41,7 +47,8 @@ def process selection
         when "2"
             show_students
         when "3"
-            save_students
+            print "Press enter to save to 'students.csv', or save file as:"
+            save_students STDIN.gets.chomp
         when "4"
             puts "Load data from which file?"
             load_students STDIN.gets.chomp
@@ -57,19 +64,30 @@ end
 ###############################################################################
 #This method asks the user for input and adds it to the student array.
 def input_students
-   puts "\nHello, and welcome to Villains Academy"
-   puts "\nPlease enter the names of all the Villains who will be enrolling this semester"
-   puts "\nWhen you've entered each name, press Enter. To finish, enter a blank line"
-   # Alternatives to .chomp are .tr(\n), .chop, .chop(\n), .strip
-   name=STDIN.gets.chomp
-   
+    
+    puts "\nHello, and welcome to Villains Academy"
+    puts "\nPlease enter the names of all the Villains who will be enrolling this semester"
+    puts "\nWhen you've entered each name, press Enter. To finish, enter a blank line"
+
+    # Alternatives to .chomp are .tr(\n), .chop, .chop(\n), .strip
+    name=STDIN.gets.chomp
     while !name.empty? do
-    # This section takes the hobby and cohort info
+        student_info_getter(name)
+        info_checker
+        name=STDIN.gets.chomp
+    end
+end
+
+###############################################################################
+# This method takes the hobby and cohort info
+def student_info_getter(name)
+    
       puts "\nWhat is the student's favourite hobby?"
       hobby=STDIN.gets.chomp
         if hobby==""
           hobby="<empty>"
         end
+        
       puts "\nWhich cohort is the student enrolling in?"
       cohort=STDIN.gets.chomp
       cohort=cohort.to_sym
@@ -79,13 +97,11 @@ def input_students
     # Name, hobby and cohort put into a new hash.      
       @students << {name: name, hobby: hobby, cohort: cohort}
       
-    # Checks to see if typo was made on last entry. Deletes it if so and returns user to start of program.  
-    info_checker
-      name=STDIN.gets.chomp
-    end
+   
 end
 
 ###############################################################################
+ # Checks to see if typo was made on last entry. Deletes it if so and returns user to menu loop.
 def info_checker
   puts "\nIs this information correct?"
       puts @students.last
@@ -138,15 +154,18 @@ def put_footer
 end
 
 ###############################################################################
-def save_students
-    file = File.open("students.csv", "w")
+def save_students(filename)
+    if filename == ""
+        filename = "students.csv"
+    end
+    file = File.open(filename, "w")
     @students.each do |student|
-        student_data=[student[:name],student[:hobby], student[:cohort]]
+        student_data=[student[:name], student[:hobby], student[:cohort]]
         csv_line = student_data.join(",")
         file.puts csv_line
     end
     file.close
-    STDOUT.puts "Data successfully saved to students.csv"
+    STDOUT.puts "Data successfully saved to #{filename}"
 end
 
 ###############################################################################
@@ -155,13 +174,15 @@ def load_students(filename)
      puts "\nNo such file. Please try again."
      return
     end
+    @students=[]
    file = File.open(filename, "r")
    file.readlines.each do |line|
        name, hobby, cohort = line.chomp.split(',')
-       @students << {name: name, hobby: hobby, cohort: cohort.to_sym}
+       cohort=cohort.to_sym
+       @students << {name: name, hobby: hobby, cohort: cohort}
    end
    file.close
-   STDOUT.puts "Student data successfully loaded from #{filename}"
+   STDOUT.puts "#{@students.count} entries successfully loaded from #{filename}"
 end
 
 ###############################################################################
