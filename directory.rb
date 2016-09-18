@@ -90,10 +90,10 @@ def student_info_getter(name)
         
       puts "\nWhich cohort is the student enrolling in?"
       cohort=STDIN.gets.chomp
-      cohort=cohort.to_sym
         if cohort==""
           cohort="<empty>"
         end
+        cohort=cohort.to_sym
     # Name, hobby and cohort put into a new hash.      
       @students << {name: name, hobby: hobby, cohort: cohort}
       
@@ -174,7 +174,7 @@ def load_students(filename)
      puts "\nNo such file. Please try again."
      return
     end
-    @students=[]
+    @students = []
    file = File.open(filename, "r")
    file.readlines.each do |line|
        name, hobby, cohort = line.chomp.split(',')
