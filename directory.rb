@@ -158,13 +158,13 @@ def save_students(filename)
     if filename == ""
         filename = "students.csv"
     end
-    file = File.open(filename, "w")
-    @students.each do |student|
-        student_data=[student[:name], student[:hobby], student[:cohort]]
-        csv_line = student_data.join(",")
-        file.puts csv_line
+    File.open(filename, "w") do |file|
+        @students.each do |student|
+            student_data=[student[:name], student[:hobby], student[:cohort]]
+            csv_line = student_data.join(",")
+            file.puts csv_line
+        end
     end
-    file.close
     STDOUT.puts "Data successfully saved to #{filename}"
 end
 
@@ -175,13 +175,13 @@ def load_students(filename)
      return
     end
     @students = []
-   file = File.open(filename, "r")
-   file.readlines.each do |line|
-       name, hobby, cohort = line.chomp.split(',')
-       cohort=cohort.to_sym
-       @students << {name: name, hobby: hobby, cohort: cohort}
+   File.open filename, "r" do |file|
+       file.readlines.each do |line|
+           name, hobby, cohort = line.chomp.split(',')
+           cohort=cohort.to_sym
+           @students << {name: name, hobby: hobby, cohort: cohort}
+       end
    end
-   file.close
    STDOUT.puts "#{@students.count} entries successfully loaded from #{filename}"
 end
 
